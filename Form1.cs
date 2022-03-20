@@ -17,6 +17,7 @@ namespace Find_file_and_dll
         public Form1()
         {
             InitializeComponent();
+
         }
         private void Path_find(object sender, EventArgs e)
         {
