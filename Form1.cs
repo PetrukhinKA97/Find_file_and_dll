@@ -143,7 +143,6 @@ namespace Find_file_and_dll
             }
 
 
-
             if(subDirs != null)
             {
                 foreach (var dirInfo in subDirs)
