@@ -155,7 +155,6 @@ namespace Find_file_and_dll
             
             if(files != null)
             {
-                //выводим имена файлов в консоль
                 foreach (var Fi in files)
                 {
                     node.Nodes.Add(new TreeNode(Fi.Name));
