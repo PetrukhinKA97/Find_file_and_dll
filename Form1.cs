@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -13,13 +14,10 @@ namespace Find_file_and_dll
 {
     public partial class Form1 : Form
     {
-
-
         public Form1()
         {
             InitializeComponent();
         }
-
         private void Path_find(object sender, EventArgs e)
         {
             FolderBrowserDialog FBD = new FolderBrowserDialog();
@@ -28,14 +26,23 @@ namespace Find_file_and_dll
                 textBox1.Text = FBD.SelectedPath;
             }
         }
-
-        private async Task Find_buttonAsync(object sender, EventArgs e)
+        private void Find_buttonAsync(object sender, EventArgs e)
         {
-            treeView1.Nodes.Add(textBox1.Text);
-            treeView1.Nodes[0].Nodes.Add("Второй");
-            treeView1.Nodes[0].Nodes[0].Nodes.Add("3");
-            //вызываем рекурсивный метод
-            await Find(new DirectoryInfo(textBox1.Text));
+
+            var root = new DirectoryInfo(textBox1.Text);
+            treeView1.Nodes.Add(Find_file(root));
+
+            /*
+            if (radioButton1.Checked == true)
+            {
+                Find_dll(new DirectoryInfo(textBox1.Text));
+            }
+            else
+            {
+                Find_file(new DirectoryInfo(textBox1.Text));
+            }
+            */
+
         }
 
         private void Pause_button(object sender, EventArgs e)
@@ -68,7 +75,7 @@ namespace Find_file_and_dll
             fs.Close();*/
         }
 
-        async static Task Find(DirectoryInfo root)
+        static void Find_dll(DirectoryInfo root)
         {
             FileInfo[] File = null;
             DirectoryInfo[] Dir = null;
@@ -94,9 +101,67 @@ namespace Find_file_and_dll
                 foreach (DirectoryInfo dirInfo in Dir)
                 {
                     //РЕКУРСИЯ
-                    Find(dirInfo);
+                    Find_dll(dirInfo);
                 }
             }
         }
+
+
+
+        private static TreeNode Find_file(DirectoryInfo root)
+        {
+            var node=new TreeNode(root.Name);
+            FileInfo[] files = null;
+            DirectoryInfo[] subDirs = null;
+            
+            // Получаем все файлы в текущем каталоге
+            try
+            {
+                files = root.GetFiles("*.*");
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+
+            }
+
+
+            try
+            {
+                subDirs = root.GetDirectories();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+
+            }
+
+
+
+            if(subDirs != null)
+            {
+                //проходим по каждому подкаталогу
+                foreach (var dirInfo in subDirs)
+                {
+                    node.Nodes.Add(Find_file(dirInfo));
+                }
+            }
+            
+            if(files != null)
+            {
+                //выводим имена файлов в консоль
+                foreach (var Fi in files)
+                {
+                    node.Nodes.Add(new TreeNode(Fi.Name));
+                }
+            }
+            return node;
+        }  
     }
 }
