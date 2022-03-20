@@ -146,7 +146,6 @@ namespace Find_file_and_dll
 
             if(subDirs != null)
             {
-                //проходим по каждому подкаталогу
                 foreach (var dirInfo in subDirs)
                 {
                     node.Nodes.Add(Find_file(dirInfo));
